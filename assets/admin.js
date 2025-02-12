@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // Modal de visualização de produto
     const modal = document.getElementById("wp-product-modal");
     const modalBody = document.getElementById("wp-product-modal-body");
     const closeModal = document.querySelector(".wp-product-modal-close");
@@ -36,6 +37,25 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener("click", function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
+        }
+    });
+
+    // Modal de importação CSV
+    const openCsvBtn = document.getElementById('open-csv-import-modal');
+    const csvModal = document.getElementById('wp-csv-import-modal');
+    const closeCsvBtn = document.getElementById('close-csv-import-modal');
+
+    openCsvBtn.addEventListener('click', function() {
+        csvModal.style.display = 'flex';
+    });
+
+    closeCsvBtn.addEventListener('click', function() {
+        csvModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function(event) {
+        if (event.target === csvModal) {
+            csvModal.style.display = 'none';
         }
     });
 });
