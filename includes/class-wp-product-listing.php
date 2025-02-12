@@ -7,6 +7,7 @@ class WP_Product_Listing {
 
 	public function __construct() {
 		add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
 		// Inclui classes adicionais
 		require_once WP_PRODUCT_LISTING_PATH . 'includes/class-wp-product-table.php';
@@ -58,5 +59,10 @@ class WP_Product_Listing {
 		} else {
 			require_once WP_PRODUCT_LISTING_PATH . 'templates/admin-product-list.php';
 		}
+	}
+
+	public function enqueue_admin_scripts() {
+		wp_enqueue_style( 'wp-product-listing-admin', WP_PRODUCT_LISTING_URL . 'assets/admin.css' );
+		wp_enqueue_script( 'wp-product-listing-admin', WP_PRODUCT_LISTING_URL . 'assets/admin.js', array( 'jquery' ), null, true );
 	}
 }
