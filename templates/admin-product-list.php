@@ -27,14 +27,7 @@ $product_table->prepare_items();
 	</div>
 	<!-- Área de botões abaixo (CSV e Limpar DB) -->
 	<div style="margin-top: 10px;">
-		<!-- Formulário de Importação CSV -->
-		<form method="post" enctype="multipart/form-data" action="<?php echo admin_url( 'admin-post.php' ); ?>" style="display:inline-block; margin-right:10px;">
-			<input type="hidden" name="action" value="wp_product_import_csv">
-			<?php wp_nonce_field( 'wp_product_import_csv_nonce' ); ?>
-			<input type="file" name="csv_file" accept=".csv">
-			<input type="submit" class="button" value="<?php _e( 'Importar CSV', 'wp-product-listing' ); ?>">
-		</form>
-		<!-- Formulário para limpar o DB -->
+		<button id="open-csv-import-modal" class="button" style="margin-right:10px;"><?php _e( 'Enviar CSV', 'wp-product-listing' ); ?></button>
 		<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>" style="display:inline-block;">
 			<input type="hidden" name="action" value="wp_product_clear_db">
 			<?php wp_nonce_field( 'wp_product_clear_db_nonce' ); ?>
@@ -46,4 +39,26 @@ $product_table->prepare_items();
 	<form method="post">
 		<?php $product_table->display(); ?>
 	</form>
+
+	<!-- Modal de Importação CSV -->
+	<div id="wp-csv-import-modal" class="wp-product-modal">
+		<div class="wp-product-modal-content">
+			<span id="close-csv-import-modal" class="wp-product-modal-close">&times;</span>
+			<h2><?php _e( 'Enviar CSV', 'wp-product-listing' ); ?></h2>
+			<p><?php _e( 'Se você tem um arquivo CSV, você pode enviá-lo aqui.', 'wp-product-listing' ); ?></p>
+			<form method="post" enctype="multipart/form-data" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+				<input type="hidden" name="action" value="wp_product_import_csv">
+				<?php wp_nonce_field( 'wp_product_import_csv_nonce' ); ?>
+				<p>
+					<input type="file" name="csv_file" accept=".csv">
+				</p>
+				<p>
+					<input type="submit" class="button" value="<?php _e( 'Enviar', 'wp-product-listing' ); ?>">
+				</p>
+			</form>
+		</div>
+	</div>
+
+	<!-- Inclui o script admin.js -->
+	<script src="<?php echo WP_PRODUCT_LISTING_URL . 'assets/admin.js'; ?>"></script>
 </div>
