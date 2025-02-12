@@ -15,6 +15,8 @@ class WP_Product_Handler {
 		add_action( 'admin_post_wp_product_edit', array( $this, 'handle_edit_product' ) );
 		add_action( 'admin_post_wp_product_delete', array( $this, 'handle_delete_product' ) );
 		add_action( 'admin_post_wp_product_import_csv', array( $this, 'handle_import_csv' ) );
+		// Novo hook para limpar DB
+		add_action( 'admin_post_wp_product_clear_db', array( $this, 'handle_clear_db' ) );
 	}
 
 	public function handle_add_product() {
@@ -152,6 +154,18 @@ class WP_Product_Handler {
 			fclose( $handle );
 		}
 		wp_safe_redirect( admin_url( 'admin.php?page=wp-product-listing&message=import_success' ) );
+		exit;
+	}
+
+	public function handle_clear_db() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( __( 'Permissão negada', 'wp-product-listing' ) );
+		}
+		check_admin_referer( 'wp_product_clear_db_nonce' );
+		global $wpdb;
+		$result = $wpdb->query( "TRUNCATE TABLE {$this->table_name}" );
+		$msg = $result === false ? 'error' : 'clear_success';
+		wp_safe_redirect( admin_url( 'admin.php?page=wp-product-listing&message=' . $msg ) );
 		exit;
 	}
 }

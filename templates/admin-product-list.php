@@ -29,6 +29,12 @@ $product_table->prepare_items();
 			<input type="file" name="csv_file" accept=".csv">
 			<input type="submit" class="button" value="<?php _e( 'Importar CSV', 'wp-product-listing' ); ?>">
 		</form>
+		 <!-- Formulário para limpar o DB -->
+		<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>" style="display:inline-block; margin-left:10px;">
+			<input type="hidden" name="action" value="wp_product_clear_db">
+			<?php wp_nonce_field( 'wp_product_clear_db_nonce' ); ?>
+			<input type="submit" class="button" value="<?php _e( 'Limpar DB', 'wp-product-listing' ); ?>" onclick="return confirm('<?php _e( 'Tem certeza que deseja limpar o banco de dados?', 'wp-product-listing' ); ?>');">
+		</form>
 		<!-- Fim do formulário CSV -->
 	</div>
 	<div style="clear: both;"></div>
