@@ -39,7 +39,6 @@ $product_table->prepare_items();
 	<form method="post">
 		<?php $product_table->display(); ?>
 	</form>
-
 	<!-- Modal de Importação CSV -->
 	<div id="wp-csv-import-modal" class="wp-product-modal">
 		<div class="wp-product-modal-content">
