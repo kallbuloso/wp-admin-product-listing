@@ -6,6 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( isset( $_GET['message'] ) ) {
 	if ( 'success' === $_GET['message'] ) {
 		echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Produto salvo com sucesso.', 'wp-product-listing' ) . '</p></div>';
+	} elseif ( 'import_success' === $_GET['message'] ) {
+		echo '<div class="notice notice-success is-dismissible"><p>' . __( 'Importação de CSV concluída com sucesso.', 'wp-product-listing' ) . '</p></div>';
 	} elseif ( 'error' === $_GET['message'] ) {
 		echo '<div class="notice notice-error is-dismissible"><p>' . __( 'Erro ao salvar o produto.', 'wp-product-listing' ) . '</p></div>';
 	}
