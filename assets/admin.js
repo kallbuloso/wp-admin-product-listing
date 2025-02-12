@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 if (data.success) {
                     modalBody.innerHTML = data.data;
-                    modal.style.display = "block";
+                    modal.style.display = "flex"; // Change to "flex" to match CSS
                 } else {
                     alert("Erro ao carregar os detalhes do produto.");
                 }
