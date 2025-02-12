@@ -15,7 +15,7 @@ class WP_Product_Modal {
 		?>
 		<div id="wp-product-modal" class="wp-product-modal">
 			<div class="wp-product-modal-content">
-				<span class="wp-product-modal-close">&times;</span>
+				<span class="wp-product-modal-close" onclick="document.getElementById('wp-product-modal').style.display='none'">&times;</span>
 				<h2><?php _e( 'Detalhes do Produto', 'wp-product-listing' ); ?></h2>
 				<div id="wp-product-modal-body"></div>
 			</div>
@@ -40,16 +40,16 @@ class WP_Product_Modal {
 
 		ob_start();
 		?>
+		<?php if ( ! empty( $product['photo_url'] ) ) : ?>
+			<p><strong><?php _e( 'Foto:', 'wp-product-listing' ); ?></strong></p>
+			<img src="<?php echo esc_url( $product['photo_url'] ); ?>" alt="<?php echo esc_attr( $product['name'] ); ?>" style="max-width: 180px; height: auto;">
+		<?php endif; ?>
 		<p><strong><?php _e( 'Código:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['code'] ); ?></p>
 		<p><strong><?php _e( 'Nome:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['name'] ); ?></p>
 		<p><strong><?php _e( 'Marca:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['brand'] ); ?></p>
 		<p><strong><?php _e( 'Categoria:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['category'] ); ?></p>
 		<p><strong><?php _e( 'Descrição:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['description'] ); ?></p>
 		<p><strong><?php _e( 'Especificações:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['specifications'] ); ?></p>
-		<?php if ( ! empty( $product['photo_url'] ) ) : ?>
-			<p><strong><?php _e( 'Foto:', 'wp-product-listing' ); ?></strong></p>
-			<img src="<?php echo esc_url( $product['photo_url'] ); ?>" alt="<?php echo esc_attr( $product['name'] ); ?>" style="max-width: 100%; height: auto;">
-		<?php endif; ?>
 		<?php
 		wp_send_json_success( ob_get_clean() );
 	}
