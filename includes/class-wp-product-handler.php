@@ -112,4 +112,46 @@ class WP_Product_Handler {
 		wp_safe_redirect( admin_url( 'admin.php?page=wp-product-listing&message=' . $msg ) );
 		exit;
 	}
+
+	public function handle_import_csv() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( __( 'Permissão negada', 'wp-product-listing' ) );
+		}
+		// Verifica o nonce
+		if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'wp_product_import_csv_nonce' ) ) {
+			wp_die( __( 'Falha na verificação de segurança.', 'wp-product-listing' ) );
+		}
+		// Verifica o arquivo enviado
+		if ( ! isset( $_FILES['csv_file'] ) || $_FILES['csv_file']['error'] !== UPLOAD_ERR_OK ) {
+			wp_die( __( 'Erro ao enviar arquivo CSV.', 'wp-product-listing' ) );
+		}
+
+		$file = $_FILES['csv_file']['tmp_name'];
+		if ( ( $handle = fopen( $file, 'r' ) ) !== false ) {
+			// Lê a primeira linha como cabeçalho e ignora
+			$header = fgetcsv( $handle, 1000, "," );
+			global $wpdb;
+			while ( ( $data = fgetcsv( $handle, 1000, "," ) ) !== false ) {
+				// Pula linhas vazias
+				if ( empty( $data[0] ) ) {
+					continue;
+				}
+				$product_data = array(
+					'code'           => sanitize_text_field( $data[0] ),
+					'macro_code'     => sanitize_text_field( $data[1] ),
+					'name'           => sanitize_text_field( $data[2] ),
+					'brand'          => sanitize_text_field( $data[3] ),
+					'category'       => sanitize_text_field( $data[4] ),
+					'description'    => sanitize_textarea_field( $data[5] ),
+					'specifications' => sanitize_textarea_field( $data[6] ),
+					'photo_url'      => esc_url_raw( $data[7] ),
+					'is_main'        => intval( $data[8] ) ? 1 : 0,
+				);
+				$wpdb->insert( $this->table_name, $product_data );
+			}
+			fclose( $handle );
+		}
+		wp_safe_redirect( admin_url( 'admin.php?page=wp-product-listing&message=import_success' ) );
+		exit;
+	}
 }
