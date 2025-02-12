@@ -20,7 +20,15 @@ class WP_Product_Table extends WP_List_Table {
 	public function prepare_items() {
 		global $wpdb;
 		$table_name = $wpdb->prefix . 'wp_product_listing';
-		$items = $wpdb->get_results( "SELECT * FROM $table_name", ARRAY_A );
+
+		// Pagination parameters
+		$per_page = 10;
+		$current_page = $this->get_pagenum();
+		$total_items = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
+
+		// Fetch the items for the current page
+		$offset = ( $current_page - 1 ) * $per_page;
+		$items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name LIMIT %d OFFSET %d", $per_page, $offset ), ARRAY_A );
 
 		$this->items = $items;
 		$this->_column_headers = array(
@@ -28,6 +36,13 @@ class WP_Product_Table extends WP_List_Table {
 			array(),
 			$this->get_sortable_columns(),
 		);
+
+		// Set pagination arguments
+		$this->set_pagination_args( array(
+			'total_items' => $total_items,
+			'per_page'    => $per_page,
+			'total_pages' => ceil( $total_items / $per_page ),
+		) );
 	}
 
 	public function get_columns() {
