@@ -13,6 +13,8 @@ class WP_Product_Listing {
 		require_once WP_PRODUCT_LISTING_PATH . 'includes/class-wp-product-table.php';
 		require_once WP_PRODUCT_LISTING_PATH . 'includes/class-wp-product-handler.php';
 		require_once WP_PRODUCT_LISTING_PATH . 'includes/class-wp-product-modal.php';
+		require_once WP_PRODUCT_LISTING_PATH . 'includes/class-wp-product-frontend.php';
+
 		
 		// Instancia o handler para registrar os hooks de add/edit
 		new WP_Product_Handler();
