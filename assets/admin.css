@@ -14,12 +14,13 @@
 .wp-product-modal-content {
     background-color: #fff;
     padding: 20px;
-    width: 50%;
+    width: 90%;
     max-width: 600px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     position: relative;
     text-align: center;
+    font-size: 14px; /* Diminuir o tamanho da fonte */
 }
 
 .wp-product-modal-close {
@@ -28,4 +29,12 @@
     right: 15px;
     font-size: 20px;
     cursor: pointer;
+}
+
+.wp-product-modal-content h2 {
+    font-size: 18px; /* Diminuir o tamanho da fonte do título */
+}
+
+.wp-product-modal-content p {
+    font-size: 14px; /* Diminuir o tamanho da fonte dos parágrafos */
 }
