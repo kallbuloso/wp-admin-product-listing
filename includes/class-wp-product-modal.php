@@ -7,7 +7,11 @@ class WP_Product_Modal {
 
 	public function __construct() {
 		add_action( 'admin_footer', array( $this, 'render_modal' ) );
+		add_action( 'wp_footer', array( $this, 'render_modal' ) );
 		add_action( 'wp_ajax_get_product_details', array( $this, 'get_product_details' ) );
+		add_action( 'wp_ajax_nopriv_get_product_details', array( $this, 'get_product_details' ) );
+		add_action( 'wp_ajax_search_product_by_code', array( $this, 'search_product_by_code' ) );
+		add_action( 'wp_ajax_nopriv_search_product_by_code', array( $this, 'search_product_by_code' ) );
 	}
 
 	// Renderiza o HTML do modal
@@ -33,6 +37,37 @@ class WP_Product_Modal {
 		$table_name = $wpdb->prefix . 'wp_product_listing';
 		$product_id = intval( $_POST['product_id'] );
 		$product    = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $product_id ), ARRAY_A );
+
+		if ( ! $product ) {
+			wp_send_json_error( __( 'Produto não encontrado.', 'wp-product-listing' ) );
+		}
+
+		ob_start();
+		?>
+		<?php if ( ! empty( $product['photo_url'] ) ) : ?>
+			<p><strong><?php _e( 'Foto:', 'wp-product-listing' ); ?></strong></p>
+			<img src="<?php echo esc_url( $product['photo_url'] ); ?>" alt="<?php echo esc_attr( $product['name'] ); ?>" style="max-width: 180px; height: auto;">
+		<?php endif; ?>
+		<p><strong><?php _e( 'Código:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['code'] ); ?></p>
+		<p><strong><?php _e( 'Nome:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['name'] ); ?></p>
+		<p><strong><?php _e( 'Marca:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['brand'] ); ?></p>
+		<p><strong><?php _e( 'Categoria:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['category'] ); ?></p>
+		<p><strong><?php _e( 'Descrição:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['description'] ); ?></p>
+		<p><strong><?php _e( 'Especificações:', 'wp-product-listing' ); ?></strong> <?php echo esc_html( $product['specifications'] ); ?></p>
+		<?php
+		wp_send_json_success( ob_get_clean() );
+	}
+
+	// Busca o produto pelo código via AJAX
+	public function search_product_by_code() {
+		if ( ! isset( $_POST['product_code'] ) ) {
+			wp_send_json_error( __( 'Código do produto não fornecido.', 'wp-product-listing' ) );
+		}
+
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'wp_product_listing';
+		$product_code = sanitize_text_field( $_POST['product_code'] );
+		$product = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM $table_name WHERE code = %s", $product_code ), ARRAY_A );
 
 		if ( ! $product ) {
 			wp_send_json_error( __( 'Produto não encontrado.', 'wp-product-listing' ) );
