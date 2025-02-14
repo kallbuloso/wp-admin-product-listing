@@ -6,7 +6,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class WP_Product_Frontend {
 
 	public function __construct() {
-		add_shortcode( 'wp_product_listing', array( $this, 'render_product_grid' ) );
 		add_shortcode( 'wp_product_search', array( $this, 'render_product_search' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
@@ -16,11 +15,6 @@ class WP_Product_Frontend {
 		wp_enqueue_style( 'wp-product-frontend', plugin_dir_url( __FILE__ ) . '../assets/frontend.css' );
 		wp_enqueue_script( 'wp-product-frontend', plugin_dir_url( __FILE__ ) . '../assets/frontend.js', array( 'jquery' ), null, true );
 		wp_localize_script( 'wp-product-frontend', 'wpProductAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
-	}
-
-	// Gera a saída do shortcode
-	public function render_product_grid( $atts ) {
-		// ...existing code...
 	}
 
 	// Gera a saída do shortcode de busca
