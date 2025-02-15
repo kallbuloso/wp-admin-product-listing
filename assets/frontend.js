@@ -1,12 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Implementação de busca dinâmica
-    let searchInput = document.querySelector(".elementor-search-form__input");
+    // let searchInput = document.querySelector(".elementor-search-form__input");
     // ...existing code...
 
     // Busca de produto pelo código
     const searchButton = document.getElementById("wp-product-search-button");
     const searchInputField = document.getElementById("wp-product-search-input");
-    const searchResult = document.getElementById("wp-product-search-result");
+    // const searchResult = document.getElementById("wp-product-search-result");
     const modal = document.getElementById("wp-product-modal");
     const modalBody = document.getElementById("wp-product-modal-body");
 
