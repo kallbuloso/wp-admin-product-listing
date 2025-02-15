@@ -17,6 +17,8 @@ class WP_Product_Handler {
 		add_action( 'admin_post_wp_product_import_csv', array( $this, 'handle_import_csv' ) );
 		// Novo hook para limpar DB
 		add_action( 'admin_post_wp_product_clear_db', array( $this, 'handle_clear_db' ) );
+		// Novo hook para edição em massa da URL da foto
+		add_action( 'admin_post_wp_product_bulk_edit_photo_url', array( $this, 'handle_bulk_edit_photo_url' ) );
 	}
 
 	public function handle_add_product() {
@@ -165,6 +167,34 @@ class WP_Product_Handler {
 		global $wpdb;
 		$result = $wpdb->query( "TRUNCATE TABLE {$this->table_name}" );
 		$msg = $result === false ? 'error' : 'clear_success';
+		wp_safe_redirect( admin_url( 'admin.php?page=wp-product-listing&message=' . $msg ) );
+		exit;
+	}
+
+	public function handle_bulk_edit_photo_url() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( __( 'Permissão negada', 'wp-product-listing' ) );
+		}
+		check_admin_referer( 'wp_product_bulk_edit_photo_url_nonce' );
+
+		global $wpdb;
+		$new_photo_url = esc_url_raw( $_POST['bulk_photo_url'] );
+		$selected_product_ids = isset($_POST['selected_product_ids']) ? explode(',', $_POST['selected_product_ids']) : array();
+		$selected_product_ids = array_map( 'intval', $selected_product_ids );
+
+		if ( empty( $selected_product_ids ) ) {
+			wp_safe_redirect( admin_url( 'admin.php?page=wp-product-listing&message=error&reason=no_products_selected' ) );
+			exit;
+		}
+
+		$ids_placeholder = implode( ',', array_fill( 0, count( $selected_product_ids ), '%d' ) );
+		$query = $wpdb->prepare( 
+			"UPDATE {$this->table_name} SET photo_url = %s WHERE id IN ($ids_placeholder)",
+			array_merge( array( $new_photo_url ), $selected_product_ids )
+		);
+		$result = $wpdb->query( $query );
+
+		$msg = $result === false ? 'error' : 'bulk_edit_success';
 		wp_safe_redirect( admin_url( 'admin.php?page=wp-product-listing&message=' . $msg ) );
 		exit;
 	}
