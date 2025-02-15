@@ -25,9 +25,10 @@ $product_table->prepare_items();
 		<h1 class="wp-heading-inline"><?php _e( 'Lista de Produtos', 'wp-product-listing' ); ?></h1>
 		<a href="<?php echo admin_url( 'admin.php?page=wp-product-listing&action=add' ); ?>" class="page-title-action"><?php _e( 'Adicionar Novo', 'wp-product-listing' ); ?></a>
 	</div>
-	<!-- Área de botões abaixo (CSV e Limpar DB) -->
+	<!-- Área de botões abaixo (CSV, Editar Foto em Massa e Limpar DB) -->
 	<div style="margin-top: 10px;">
 		<button id="open-csv-import-modal" class="button" style="margin-right:10px;"><?php _e( 'Enviar CSV', 'wp-product-listing' ); ?></button>
+		<button id="open-bulk-edit-modal" class="button" style="margin-right:10px;"><?php _e( 'Editar Foto em Massa', 'wp-product-listing' ); ?></button>
 		<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>" style="display:inline-block;">
 			<input type="hidden" name="action" value="wp_product_clear_db">
 			<?php wp_nonce_field( 'wp_product_clear_db_nonce' ); ?>
@@ -57,7 +58,26 @@ $product_table->prepare_items();
 			</form>
 		</div>
 	</div>
-
+	<!-- Modal de Edição em Massa -->
+	<div id="wp-bulk-edit-modal" class="wp-product-modal">
+		<div class="wp-product-modal-content">
+			<span id="close-bulk-edit-modal" class="wp-product-modal-close">&times;</span>
+			<h2><?php _e( 'Editar Foto em Massa', 'wp-product-listing' ); ?></h2>
+			<p><?php _e( 'Insira a URL da nova foto para os produtos selecionados.', 'wp-product-listing' ); ?></p>
+			<form method="post" action="<?php echo admin_url( 'admin-post.php' ); ?>">
+				<input type="hidden" name="action" value="wp_product_bulk_edit_photo_url">
+				<?php wp_nonce_field( 'wp_product_bulk_edit_photo_url_nonce' ); ?>
+				<input type="hidden" id="selected-product-ids" name="selected_product_ids" value="">
+				<p>
+					<input type="url" name="bulk_photo_url" id="bulk_photo_url" required>
+					<button type="button" class="button" id="select_bulk_image"><?php _e( 'Selecionar Imagem', 'wp-product-listing' ); ?></button>
+				</p>
+				<p>
+					<input type="submit" class="button" value="<?php _e( 'Atualizar', 'wp-product-listing' ); ?>">
+				</p>
+			</form>
+		</div>
+	</div>
 	<!-- Inclui o script admin.js -->
 	<script src="<?php echo WP_PRODUCT_LISTING_URL . 'assets/admin.js'; ?>"></script>
 </div>
