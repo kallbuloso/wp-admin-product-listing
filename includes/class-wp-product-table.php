@@ -26,9 +26,13 @@ class WP_Product_Table extends WP_List_Table {
 		$current_page = $this->get_pagenum();
 		$total_items = $wpdb->get_var( "SELECT COUNT(*) FROM $table_name" );
 
+		 // Sorting parameters
+		$orderby = ! empty( $_GET['orderby'] ) ? sanitize_sql_orderby( $_GET['orderby'] ) : 'id';
+		$order = ! empty( $_GET['order'] ) ? sanitize_text_field( $_GET['order'] ) : 'asc';
+
 		// Fetch the items for the current page
 		$offset = ( $current_page - 1 ) * $per_page;
-		$items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name LIMIT %d OFFSET %d", $per_page, $offset ), ARRAY_A );
+		$items = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM $table_name ORDER BY $orderby $order LIMIT %d OFFSET %d", $per_page, $offset ), ARRAY_A );
 
 		$this->items = $items;
 		$this->_column_headers = array(
@@ -47,21 +51,45 @@ class WP_Product_Table extends WP_List_Table {
 
 	public function get_columns() {
 		return array(
-			'code'         => __( 'Código', 'wp-product-listing' ),
-			'name'         => __( 'Nome', 'wp-product-listing' ),
-			'brand'        => __( 'Marca', 'wp-product-listing' ),
-			'category'     => __( 'Categoria', 'wp-product-listing' ),
-			'is_main'      => __( 'Principal', 'wp-product-listing' ),
-			'actions'      => __( 'Ações', 'wp-product-listing' ),
+				'cb'           => '<input type="checkbox" />',
+				'code'         => __( 'Código', 'wp-product-listing' ),
+				'name'         => __( 'Nome', 'wp-product-listing' ),
+				'brand'        => __( 'Marca', 'wp-product-listing' ),
+				'category'     => __( 'Categoria', 'wp-product-listing' ),
+				'photo_url'    => __( 'URL da Foto', 'wp-product-listing' ),
+				'is_main'      => __( 'Principal', 'wp-product-listing' ),
+				'actions'      => __( 'Ações', 'wp-product-listing' ),
+		);
+	}
+
+	public function get_sortable_columns() {
+		return array(
+			'code'      => array( 'code', true ),
+			'name'      => array( 'name', true ),
+			'brand'     => array( 'brand', true ),
+			'category'  => array( 'category', true ),
+			'photo_url' => array( 'photo_url', true ),
+			'is_main'   => array( 'is_main', true ),
+		);
+	}
+
+	protected function column_cb( $item ) {
+		return sprintf(
+			'<input type="checkbox" name="product[]" value="%d" />',
+			$item['id']
 		);
 	}
 
 	public function column_default( $item, $column_name ) {
-        if ( $column_name === 'name' ) {
-            return esc_html( $item['name'] );
-        }
-        return isset( $item[ $column_name ] ) ? esc_html( $item[ $column_name ] ) : '';
-    }
+		switch ( $column_name ) {
+			case 'photo_url':
+				return esc_html( $item['photo_url'] );
+			case 'name':
+				return esc_html( $item['name'] );
+			default:
+				return isset( $item[ $column_name ] ) ? esc_html( $item[ $column_name ] ) : '';
+		}
+	}
 
 	public function column_actions( $item ) {
 		$edit_url = admin_url( 'admin.php?page=wp-product-listing&action=edit&id=' . intval( $item['id'] ) );
