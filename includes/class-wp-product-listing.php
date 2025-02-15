@@ -63,8 +63,15 @@ class WP_Product_Listing {
 		}
 	}
 
-	public function enqueue_admin_scripts() {
-		wp_enqueue_style( 'wp-product-listing-admin', WP_PRODUCT_LISTING_URL . 'assets/admin.css' );
-		wp_enqueue_script( 'wp-product-listing-admin', WP_PRODUCT_LISTING_URL . 'assets/admin.js', array( 'jquery' ), null, true );
+	public function enqueue_admin_scripts($hook) {
+		if ('toplevel_page_wp-product-listing' !== $hook) {
+			return;
+		}
+
+		wp_enqueue_media();
+		wp_enqueue_style('wp-product-listing-admin', WP_PRODUCT_LISTING_URL . 'assets/admin.css');
+		wp_localize_script('jquery', 'wpProductListing', array(
+			'ajaxurl' => admin_url('admin-ajax.php'),
+		));
 	}
 }
