@@ -38,3 +38,11 @@
 .wp-product-modal-content p {
     font-size: 14px; /* Diminuir o tamanho da fonte dos parágrafos */
 }
+
+#select_bulk_image {
+    margin-left: 10px;
+}
+
+#bulk_photo_url {
+    width: calc(100% - 150px);
+}
