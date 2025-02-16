@@ -55,7 +55,10 @@ if ( isset( $_GET['id'] ) ) {
 			</tr>
 			<tr>
 				<th scope="row"><label for="photo_url"><?php _e( 'URL da Foto', 'wp-product-listing' ); ?></label></th>
-				<td><input name="photo_url" type="text" id="photo_url" value="<?php echo esc_url( $product['photo_url'] ?? '' ); ?>" class="regular-text"></td>
+					<td>
+						<input name="photo_url" type="text" id="photo_url" value="<?php echo esc_url( $product['photo_url'] ?? '' ); ?>" class="regular-text">
+						<button type="button" class="button" id="select_product_image"><?php _e( 'Selecionar Imagem', 'wp-product-listing' ); ?></button>
+					</td>
 			</tr>
 			<tr>
 				<th scope="row"><label for="is_main"><?php _e( 'Principal', 'wp-product-listing' ); ?></label></th>
@@ -69,3 +72,20 @@ if ( isset( $_GET['id'] ) ) {
 		<a href="<?php echo admin_url( 'admin.php?page=wp-product-listing' ); ?>" class="button"><?php _e( 'Voltar', 'wp-product-listing' ); ?></a>
 	</p>
 </div>
+
+<script>
+jQuery(document).ready(function($) {
+    $('#select_product_image').click(function(e) {
+        e.preventDefault();
+        var image = wp.media({
+            title: 'Selecionar Imagem',
+            multiple: false
+        }).open()
+        .on('select', function(e) {
+            var uploaded_image = image.state().get('selection').first();
+            var image_url = uploaded_image.toJSON().url;
+            $('#photo_url').val(image_url);
+        });
+    });
+});
+</script>
